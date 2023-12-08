@@ -13,7 +13,7 @@ class LoadGenerator:
         self.count = 0
 
     def generator_load(self):
-        for _ in range(20):
+        for _ in range(50):
             self.count += 1
             start_time = time.time()
             print(start_time)
@@ -23,6 +23,7 @@ class LoadGenerator:
                 print(response)
                 self.total_response_time += time.time() - start_time
             except requests.exceptions.RequestException:
+                print(f"Failure at requesting")
                 self.total_request_failure += 1
             finally:
                 self.total_request += 1
@@ -32,10 +33,10 @@ class LoadGenerator:
         avg_response_time = self.total_response_time / self.total_request if self.total_request else 0
         print(f"Average Response time: {avg_response_time:.2f} seconds")
         print(f"Total Failure: {self.total_request_failure}")
-        return {"total_request": self.total_request_failure,"avg_response": avg_response_time,"Number_Of_Requests": self.count}
+        return {"total_failure_request": self.total_request_failure,"avg_response": avg_response_time,"Number_Of_Requests": self.count}
 
 if __name__ == "__main__":
-    target = os.getenv("TARGET", "http://localhost:5000/primecheck")
+    target = os.getenv("TARGET", "http://localhost:30000/primecheck")
     frequency = float(os.getenv("FREQUENCY",10))
 
     load_generator = LoadGenerator(
